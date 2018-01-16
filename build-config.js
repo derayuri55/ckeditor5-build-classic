@@ -19,7 +19,6 @@ module.exports = {
 		'@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter',
 		'@ckeditor/ckeditor5-autoformat/src/autoformat',
 		'@ckeditor/ckeditor5-basic-styles/src/bold',
-		'@ckeditor/ckeditor5-basic-styles/src/italic',
 		'@ckeditor/ckeditor5-block-quote/src/blockquote',
 		'@ckeditor/ckeditor5-easy-image/src/easyimage',
 		'@ckeditor/ckeditor5-heading/src/heading',
@@ -34,7 +33,7 @@ module.exports = {
 	],
 
 	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-	language: 'en',
+	language: 'ja',
 
 	// Editor config.
 	config: {
@@ -42,7 +41,6 @@ module.exports = {
 			items: [
 				'headings',
 				'bold',
-				'italic',
 				'link',
 				'bulletedList',
 				'numberedList',

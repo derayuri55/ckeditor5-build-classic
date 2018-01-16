@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,6 @@ import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadadapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import EasyimagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
@@ -23,13 +22,40 @@ import ImageuploadPlugin from '@ckeditor/ckeditor5-upload/src/imageupload';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
+class Adapter {
+	constructor( loader ) {
+		// Save Loader instance to update upload progress.
+		this.loader = loader;
+	}
+
+	upload() {
+		// Update loader's progress.
+		server.onUploadProgress( data => {
+			loader.uploadTotal = data.total;
+			loader.uploaded = data.uploaded;
+		} );
+
+		// Return promise that will be resolved when file is uploaded.
+		return server.upload( loader.file );
+	}
+
+	abort() {
+		// Reject promise returned from upload() method.
+		server.abortUpload();
+	}
+}
+
+// console.log(ImageuploadPlugin);
+// ImageuploadPlugin.editor.plugins.get('FileRepository').createAdapter = (loader) => {
+// 	return new Adapter( loader );
+// };
+
 ClassicEditor.build = {
 	plugins: [
 		EssentialsPlugin,
 		UploadadapterPlugin,
 		AutoformatPlugin,
 		BoldPlugin,
-		ItalicPlugin,
 		BlockquotePlugin,
 		EasyimagePlugin,
 		HeadingPlugin,
@@ -47,7 +73,6 @@ ClassicEditor.build = {
 			items: [
 				'headings',
 				'bold',
-				'italic',
 				'link',
 				'bulletedList',
 				'numberedList',
@@ -66,3 +91,5 @@ ClassicEditor.build = {
 		}
 	}
 };
+
+console.log(ClassicEditor);
