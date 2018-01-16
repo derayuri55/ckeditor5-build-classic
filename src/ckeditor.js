@@ -22,34 +22,6 @@ import ImageuploadPlugin from '@ckeditor/ckeditor5-upload/src/imageupload';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
-class Adapter {
-	constructor( loader ) {
-		// Save Loader instance to update upload progress.
-		this.loader = loader;
-	}
-
-	upload() {
-		// Update loader's progress.
-		server.onUploadProgress( data => {
-			loader.uploadTotal = data.total;
-			loader.uploaded = data.uploaded;
-		} );
-
-		// Return promise that will be resolved when file is uploaded.
-		return server.upload( loader.file );
-	}
-
-	abort() {
-		// Reject promise returned from upload() method.
-		server.abortUpload();
-	}
-}
-
-// console.log(ImageuploadPlugin);
-// ImageuploadPlugin.editor.plugins.get('FileRepository').createAdapter = (loader) => {
-// 	return new Adapter( loader );
-// };
-
 ClassicEditor.build = {
 	plugins: [
 		EssentialsPlugin,
@@ -92,4 +64,43 @@ ClassicEditor.build = {
 	}
 };
 
-console.log(ClassicEditor);
+class Adapter {
+	constructor( loader ) {
+		// Save Loader instance to update upload progress.
+		console.log(loader);
+		this.loader = loader;
+		this.upload();
+	}
+
+	upload() {
+		console.log(server);
+		// Update loader's progress.
+		server.onUploadProgress( data => {
+			loader.uploadTotal = data.total;
+			loader.uploaded = data.uploaded;
+		});
+
+		// Return promise that will be resolved when file is uploaded.
+		return server.upload( loader.file );
+	}
+
+	abort() {
+		// Reject promise returned from upload() method.
+		server.abortUpload();
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector('#editor') )
+	.then( editor => {
+		window.editor = editor;
+
+		//FileRepository
+		editor.plugins.get('FileRepository').createAdapter = (loader) => {
+			return new Adapter(loader);
+		};
+
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	});
